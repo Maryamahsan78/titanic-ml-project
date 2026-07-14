@@ -46,11 +46,14 @@ with st.expander("About this model"):
         "title extracted from name, family size, and cabin availability."
     )
     try:
-        importance = pd.read_csv("feature_importance.csv", index_col=0)
-        importance.columns = ["Importance"]
-        st.bar_chart(importance)
-    except FileNotFoundError:
-        pass
+    importance = pd.read_csv("feature_importance.csv", index_col=0)
+    importance.columns = ["Importance"]
+
+    st.subheader("Feature Importance")
+    st.dataframe(importance)
+
+except FileNotFoundError:
+    pass
 
 st.divider()
 
