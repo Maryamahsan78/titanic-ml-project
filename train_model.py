@@ -8,7 +8,7 @@ for use in the Streamlit app.
 
 import pandas as pd
 import numpy as np
-import pickle
+import joblib
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -125,21 +125,23 @@ if hasattr(best_model, "feature_importances_"):
 # -----------------------------
 # 7. Save everything the app needs
 # -----------------------------
-with open("titanic_model.pkl", "wb") as f:
-    pickle.dump(best_model, f)
+metadata = {
+    "sex": le_sex,
+    "embarked": le_embarked,
+    "title": le_title,
+    "model_name": best_name,
+    "accuracy": best_acc,
+    "uses_scaling": best_name == "Logistic Regression",
+    "features": features,
+}
 
-with open("scaler.pkl", "wb") as f:
-    pickle.dump(scaler, f)
+joblib.dump(best_model, "titanic_model.pkl")
+joblib.dump(scaler, "scaler.pkl")
+joblib.dump(metadata, "encoders.pkl")
 
-with open("encoders.pkl", "wb") as f:
-    pickle.dump({
-        "sex": le_sex,
-        "embarked": le_embarked,
-        "title": le_title,
-        "model_name": best_name,
-        "accuracy": best_acc,
-        "uses_scaling": best_name == "Logistic Regression",
-        "features": features,
-    }, f)
+print("\nSaved successfully:")
+print(" - titanic_model.pkl")
+print(" - scaler.pkl")
+print(" - encoders.pkl")
 
 print("\nSaved: titanic_model.pkl, scaler.pkl, encoders.pkl")

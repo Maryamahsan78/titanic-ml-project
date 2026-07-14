@@ -10,7 +10,7 @@ Run locally with:  streamlit run app.py
 import streamlit as st
 import pandas as pd
 import numpy as np
-import pickle
+import joblib
 
 st.set_page_config(page_title="Titanic Survival Predictor", page_icon="🚢", layout="centered")
 
@@ -19,14 +19,14 @@ st.set_page_config(page_title="Titanic Survival Predictor", page_icon="🚢", la
 # -----------------------------
 @st.cache_resource
 def load_artifacts():
-    with open("titanic_model.pkl", "rb") as f:
-        model = pickle.load(f)
-    with open("scaler.pkl", "rb") as f:
-        scaler = pickle.load(f)
-    with open("encoders.pkl", "rb") as f:
-        meta = pickle.load(f)
-    return model, scaler, meta
-
+    try:
+        model = joblib.load("titanic_model.pkl")
+        scaler = joblib.load("scaler.pkl")
+        meta = joblib.load("encoders.pkl")
+        return model, scaler, meta
+    except Exception as e:
+        st.error(f"Error loading model: {e}")
+        st.stop()
 model, scaler, meta = load_artifacts()
 
 # -----------------------------
